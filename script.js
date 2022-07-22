@@ -1,13 +1,42 @@
+let currentSize = 16
+let rainBowMode = false
+const grid = document.querySelector('#grid')
+const sizeSlider = document.querySelector('#size-slider')
+const coloredPixels = document.querySelector('.colored')
+const rainBowButton = document.querySelector('#rainbow')
+const clearButton = document.querySelector('#clear')
+
 function paint() {
-    this.classList.add('colored')
+    if (rainBowMode) rainbow(this)
+    else this.classList.add('colored')
 }
 
-const grid = document.querySelector('#grid')
-for (let i = 0; i < 16*16; i++) {
+function createGrid() {
+    grid.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`
+    grid.style.gridTemplateRows = `repeat(${currentSize}, 1fr)`
+    for (let i = 0; i < (currentSize*currentSize); i++) {
     const gridItem = document.createElement('div')
-    gridItem.classList.add('grid-item')
-    gridItem.addEventListener('mouseover', paint)
-    grid.appendChild(gridItem)
+        gridItem.classList.add('grid-item')
+        gridItem.addEventListener('mouseover', paint)
+        grid.appendChild(gridItem)
+    }
 }
-grid.style.gridTemplateColumns = 'repeat(16, 1fr)'
-//grid.style.gridTemplateRows = 'repeat(100, 1fr)'
+
+function rainbow(pixel) {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16)
+    const colorString = '#' + randomColor
+    pixel.style.backgroundColor = colorString
+}
+
+function clear() {
+    grid.innerHTML = ''
+    createGrid()
+}
+
+sizeSlider.oninput = (e) => {
+    currentSize = e.target.value
+    clear()
+}
+rainBowButton.onclick = () => rainBowMode = true
+clearButton.onclick = clear
+createGrid()
